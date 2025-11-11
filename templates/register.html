@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Refugee Registration Form</h2>
+<form method="POST" action="{{ url_for('submit_form') }}">
+  <p><input type="text" name="name" placeholder="Full name" required></p>
+  <p><input type="text" name="country" placeholder="Country of origin" required></p>
+  <p><input type="number" name="age" placeholder="Age" required></p>
+  <label for="date">Date of Birth: </label>
+  <p><input type="date" name="date" id="date" placeholder="DD/MM/YYYY"></p>
+  <p><button type="submit">Submit</button></p>
+</form>
+{% endblock %}
