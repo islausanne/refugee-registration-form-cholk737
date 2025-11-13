@@ -2,23 +2,28 @@
 {% block content %}
 <h2>Registered Refugees</h2>
 {% if registrations %}
-  <table>
-    <tr>
-      <th>Name</th>
-      <th>Country</th>
-      <th>Age</th>
-      <th>Date of Birth</th>
-    </tr>
-    {% for person in registrations %}
-      <tr>
-        <td>{{ person.name }}</td>
-        <td>{{ person.country }}</td>
-        <td>{{ person.age }}</td>
-        <td>{{ person.date }}</td>
-      </tr>
-    {% endfor %}
-  </table>
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Country</th>
+			<th>Date of Birth</th>
+            <th>Urgent Needs</th>
+            <th>Medical Information</th>
+            <th>Additional Information</th>
+		</tr>
+		{% for person in registrations %}
+			<tr>
+				<td>{{ person.name }}</td>
+				<td>{{ person.country }}</td>
+				<td>{{ person.date }}</td>
+                <td>{{ person.urgent_needs }}</td>
+                <td>{{ person.medical_information }}</td>
+                <td>{{ person.additional_information }}</td>
+			</tr>
+		{% endfor %}
+	</table>
 {% else %}
-  <p>No registrations found yet.</p>
+	<p>No registrations found yet.</p>
 {% endif %}
 {% endblock %}
+

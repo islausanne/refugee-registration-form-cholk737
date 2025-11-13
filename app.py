@@ -18,10 +18,13 @@ def register():
 # Handle form submission (students will add JSON save code here)
 @app.route('/submit', methods=['POST'])
 def submit_form():
-    name = request.form['name']
+    name = request.form['Name']
     country = request.form['country']
-    age = request.form['age']
     date = request.form['date']
+    urgent_needs = request.form['urgent_needs']
+    medical_information = request.form['medical_information']
+    additional_information = request.form['additional_field']
+
 
     # Check if file exists
     if os.path.exists('registrations.json'):
@@ -31,7 +34,7 @@ def submit_form():
         data = []
 
     # Add the new registration
-    data.append({'name': name, 'country': country, 'age': age, 'date': date})
+    data.append({'name': name, 'country': country, 'date': date, 'urgent': urgent_needs, 'medical_information': medical_information, 'additional': additional_information})
 
     # Save all registrations back to the file
     with open('registrations.json', 'w') as file:

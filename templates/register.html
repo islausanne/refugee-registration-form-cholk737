@@ -2,11 +2,18 @@
 {% block content %}
 <h2>Refugee Registration Form</h2>
 <form method="POST" action="{{ url_for('submit_form') }}">
-  <p><input type="text" name="name" placeholder="Full name" required></p>
-  <p><input type="text" name="country" placeholder="Country of origin" required></p>
-  <p><input type="number" name="age" placeholder="Age" required></p>
-  <label for="date">Date of Birth: </label>
-  <p><input type="date" name="date" id="date" placeholder="DD/MM/YYYY"></p>
-  <p><button type="submit">Submit</button></p>
+    <label for="name">Name: </label>
+    <p><textarea name="Name" id="name" rows="1" cols="100" placeholder="Full Name" required></textarea></p>
+    <label for="date">Date of Birth: </label>
+    <p><input type="date" name="date" id="date" placeholder="DD/MM/YYYY"></p>
+    <label for="country">Country of Origin: </label>
+    <p><input type="text" name="country" id="country" placeholder="Country of origin" required></p>
+    <label for="urgent_needs">Urgent Needs (OPTIONAL): </label>
+    <p><textarea name ="urgent_needs" id="urgent_needs" rows="5" cols="100" placeholder="Any Urgent Needs? (OPTIONAL, CAN LEAVE BLANK)"></textarea></p>
+    <label for="medical_information">Medical Information (OPTIONAL): </label>
+    <p><textarea name ="medical_information" id="medical_information" rows="5" cols="100" placeholder="Any important medical information? (e.g. Allergies, Past Injuries, Sex) (OPTIONAL, CAN LEAVE BLANK)"></textarea></p>
+    <label for="additional_field">Anything else? (Additional space) (OPTIONAL): </label>
+    <p><textarea name ="additional_field" id="additional_field" rows="5" cols="100" placeholder="Anything else you want to add (e.g. Familial information [names of children/parents] etc...) (OPTIONAL, CAN LEAVE BLANK)"></textarea></p>
+    <p><button type="submit">Submit</button></p>
 </form>
 {% endblock %}
