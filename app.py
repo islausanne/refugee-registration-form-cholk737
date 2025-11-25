@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import json
 import os
 
@@ -25,6 +25,14 @@ def submit_form():
     medical_information = request.form['medical_information']
     additional_information = request.form['additional_field']
 
+    # Store values in session so we can repopulate them
+    session['name'] = name
+    session['country'] = country
+    session['date'] = date
+    session['urgent_needs'] = urgent_needs
+    session['medical_information'] = medical_information
+    session['additional_information'] = additional_information
+
 
     # Check if file exists
     if os.path.exists('registrations.json'):
@@ -40,6 +48,13 @@ def submit_form():
     with open('registrations.json', 'w') as file:
         json.dump(data, file, indent=2)
 
+    # Clear session values after success
+    session.pop('name', None)
+    session.pop('country', None)
+    session.pop('date', None)
+    session.pop('urgent_needs', None)
+    session.pop('medical_information', None)
+    session.pop('additional_information', None)
 
     flash('Registration submitted successfully!')
     return redirect(url_for('index'))
