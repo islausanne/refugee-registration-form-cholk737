@@ -2,30 +2,84 @@
 {% block content %}
 <head>
     <style>
+    .form-container {
+        display: flex;              /* horizontal layout */
+        width: 100vw;               /* full screen width */
+        height: 100vh;              /* full screen height */
+    }
+
+    .form-half, .image-half {
+        width: 50%;                 /* split 50/50 */
+        display: flex;
+        align-items: center;        /* center vertically */
+        justify-content: center;    /* center horizontally if needed */
+        box-sizing: border-box;
+        padding: 20px;
+    }
+
+    /* Make the image fill its container and keep square aspect ratio */
+    .image-half img {
+        width: 75%;                /* fills 50% width */
+        height: auto;               /* keep aspect ratio */
+        object-fit: cover;          /* cover the entire container area */
+    }
+
+    input, textarea, select {
+        border: 2px solid #ccc;       /* light gray border */
+        border-radius: 10px;          /* curved corners */
+        padding: 12px 12px;           /* makes the boxes taller */
+        font-size: 16px;              /* slightly bigger text */
+        outline: none;                /* removes default focus outline */
+        width: 90%;                  /* optional: makes them full width of container */
+        box-sizing: border-box;       /* ensures padding doesn't increase total width */
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
     input:invalid, textarea:invalid, select:invalid {
-      border: 2px solid red;
+        border: 2px solid red;
     }
 
     input:valid, textarea:valid, select:valid {
-      border: 2px solid green;
+        border: 2px solid green;
     }
     .error-text {
-      color: red;
-      font-size: 12px;
+        color: red;
+        font-size: 12px;
     }
     </style>
 </head>
 <body>
     <h2>Refugee Registration Form</h2>
+
+    <div id="top-errors" style="
+    display:none;
+    background-color:#ffdddd;
+    border:2px black solid;
+    padding:10px;
+    margin-bottom:15px;
+">
+    <h5>ERRORS (PLEASE SOLVE):</h5>
+    <ul id="top-errors-list" style="margin:0; padding-left:20px;"></ul>
+</div>
+
+<div class="form-container">
+  <div class="form-half">
     <form method="POST" action="{{ url_for('submit_form') }}">
         <label for="name">Name: </label>
-        <p><textarea name="Name" id="name" rows="1" cols="100" placeholder="Full Name" required></textarea></p>
+        <p>
+            <textarea name="Name" id="name" rows="1" cols="100" placeholder="Full Name" required></textarea>
+            <span id="name-error-icon" style="color:red; display:none; margin-left:5px;">❗</span>
+        </p>
         <p id="name-error" class="error-text"></p>
         <label for="date">Date of Birth: </label>
-        <p><input type="date" name="date" id="date" placeholder="DD/MM/YYYY" required></p>
+        <p>
+            <input type="date" name="date" id="date" placeholder="DD/MM/YYYY" required>
+            <span id="date-error-icon" style="color:red; display:none; margin-left:5px;">❗</span>
+        </p>
         <p id="date-error" class="error-text"></p>
         <label for="country">Country of Origin: </label>
-        <p><select class="form-select" placeholder="Country of Origin" id="country" name="country" required>
+        <p>
+            <select class="form-select" placeholder="Country of Origin" id="country" name="country" required>
             <option selected disabled value="">Select Country of Origin</option>
             <option value="AF">Afghanistan</option>
             <option value="AX">Åland Islands</option>
@@ -279,7 +333,9 @@
             <option value="YE">Yemen</option>
             <option value="ZM">Zambia</option>
             <option value="ZW">Zimbabwe</option>
-        </select></p>
+        </select>
+            <span id="country-error-icon" style="color:red; display:none; margin-left:5px;">❗</span>
+        </p>
         <p id="country-error" class="error-text"></p>
         <label for="urgent_needs">Urgent Needs (OPTIONAL): </label>
         <p><textarea name ="urgent_needs" id="urgent_needs" rows="5" cols="100" placeholder="Any Urgent Needs? (OPTIONAL, CAN LEAVE BLANK)"></textarea></p>
@@ -290,6 +346,10 @@
         <p><button type="submit">Submit</button></p>
 
     </form>
+  </div>
+  <div class="image-half">
+      <img src="static/logo.png" alt="Logo"
+  </div>
     <script> <!-- THIS IS FOR NAME VALIDATION (JAVASCRIPT) -->
     const nameField = document.getElementById('name');
     const nameError = document.getElementById('name-error');
@@ -303,24 +363,87 @@
         nameField.setCustomValidity("");
         nameError.textContent = "";
       }
+
+      // Show/hide exclamation mark next to the input
+      document.getElementById('name-error-icon').style.display = value === '' ? 'inline' : 'none';
+
+      updateTopErrors();
     });
     </script>
+
     <script> <!-- THIS IS FOR DATE VALIDATION (NOT IN THE FUTURE) (JAVASCRIPT) -->
-        const dateField = document.getElementById('date');
-        const dateError = document.getElementById('date-error');
+    const dateField = document.getElementById('date');
+    const dateError = document.getElementById('date-error');
 
-        dateField.addEventListener('input', () => {
-          const today = new Date();
-          const selectedDate = new Date(dateField.value);
+    dateField.addEventListener('input', () => {
+      const today = new Date();
+      const selectedDate = new Date(dateField.value);
 
-          if (selectedDate > today) {
-            dateField.setCustomValidity("Date of Birth cannot be in the future");
-            dateError.textContent = "Date of Birth cannot be in the future";
-          } else {
-            dateField.setCustomValidity("");
-            dateError.textContent = "";
-          }
-        });
+      if (selectedDate > today) {
+        dateField.setCustomValidity("Date of Birth cannot be in the future");
+        dateError.textContent = "Date of Birth cannot be in the future";
+      } else {
+        dateField.setCustomValidity("");
+        dateError.textContent = "";
+      }
+
+      // Show/hide exclamation mark next to the input
+      document.getElementById('date-error-icon').style.display = selectedDate > today ? 'inline' : 'none';
+
+      updateTopErrors();
+    });
+    </script>
+
+    <script> <!-- THIS IS FOR COUNTRY VALIDATION (REQUIRED SELECTION) -->
+    const countryField = document.getElementById('country');
+    const countryError = document.getElementById('country-error');
+
+    countryField.addEventListener('change', () => {
+      if (!countryField.value) {
+        countryField.setCustomValidity("Please select a country of origin");
+        countryError.textContent = "Please select a country of origin";
+      } else {
+        countryField.setCustomValidity("");
+        countryError.textContent = "";
+      }
+
+      // Show/hide exclamation mark next to the select
+      document.getElementById('country-error-icon').style.display = !countryField.value ? 'inline' : 'none';
+
+      updateTopErrors();
+    });
+    </script>
+
+    <script> <!-- THIS CREATES A RED BOX ON THE TOP AND PASSES THE ERRORS AS A LIST -->
+    function updateTopErrors() {
+        const errors = [];
+
+        // Collect errors from your inline <p id="...-error">
+        const nameErr = document.getElementById("name-error").textContent.trim();
+        const dateErr = document.getElementById("date-error").textContent.trim();
+        const countryErr = document.getElementById("country-error").textContent.trim();
+
+        if (nameErr) errors.push(nameErr);
+        if (dateErr) errors.push(dateErr);
+        if (countryErr) errors.push(countryErr);
+
+        const topBox = document.getElementById("top-errors");
+        const list = document.getElementById("top-errors-list");
+
+        list.innerHTML = "";  // Clear current errors
+
+        if (errors.length > 0) {
+            topBox.style.display = "block";
+
+            errors.forEach(err => {
+                const li = document.createElement("li");
+                li.textContent = err;
+                list.appendChild(li);
+            });
+        } else {
+            topBox.style.display = "none";
+        }
+    }
     </script>
 </body>
 {% endblock %}
