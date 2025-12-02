@@ -5,7 +5,7 @@
     .form-container {
         display: flex;              /* horizontal layout */
         width: 100vw;               /* full screen width */
-        height: 100vh;              /* full screen height */
+
     }
 
     .form-half, .image-half {
@@ -17,11 +17,26 @@
         padding: 20px;
     }
 
-    /* Make the image fill its container and keep square aspect ratio */
+    .image-half {
+        width: 40%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;   /* stack children vertically */
+        align-items: center;      /* center children horizontally */
+        justify-content: flex-start; /* start from the top */
+        object-fit: cover; /* cover the entire container area */
+    }
+
     .image-half img {
-        width: 75%;                /* fills 50% width */
-        height: auto;               /* keep aspect ratio */
-        object-fit: cover;          /* cover the entire container area */
+        width: 100%;       /* fill the column width */
+        height: auto;      /* maintain aspect ratio */
+        object-fit: cover; /* make sure it covers available width */
+        margin-bottom: 20px; /* spacing before error box */
+    }
+
+    #top-errors {
+        width: 100%;
+        margin-bottom: 20px;  /* spacing before submit button */
     }
 
     input, textarea, select {
@@ -46,21 +61,31 @@
         color: red;
         font-size: 12px;
     }
+
+    .submit-btn {
+        background-color: #28a745;  /* bright green */
+        color: white;               /* text color */
+        font-size: 24px;            /* big text */
+        font-weight: bold;
+        padding: 20px 40px;         /* big button */
+        border: none;               /* remove default border */
+        border-radius: 15px;        /* rounded corners */
+        cursor: pointer;            /* pointer on hover */
+        width: 100%;                /* full width of the form container */
+        max-width: 400px;           /* optional: max width */
+        transition: background-color 0.3s, transform 0.2s;  /* nice hover effect */
+    }
+
+    .submit-btn:hover {
+        background-color: #218838;  /* darker green on hover */
+        transform: scale(1.05);     /* slightly bigger on hover */
+    }
     </style>
 </head>
 <body>
     <h2>Refugee Registration Form</h2>
 
-    <div id="top-errors" style="
-    display:none;
-    background-color:#ffdddd;
-    border:2px black solid;
-    padding:10px;
-    margin-bottom:15px;
-">
-    <h5>ERRORS (PLEASE SOLVE):</h5>
-    <ul id="top-errors-list" style="margin:0; padding-left:20px;"></ul>
-</div>
+
 
 <div class="form-container">
   <div class="form-half">
@@ -343,12 +368,25 @@
         <p><textarea name ="medical_information" id="medical_information" rows="5" cols="100" placeholder="Any important medical information? (e.g. Allergies, Past Injuries, Sex) (OPTIONAL, CAN LEAVE BLANK)"></textarea></p>
         <label for="additional_field">Anything else? (Additional space) (OPTIONAL): </label>
         <p><textarea name ="additional_field" id="additional_field" rows="5" cols="100" placeholder="Anything else you want to add (e.g. Familial information [names of children/parents] etc...) (OPTIONAL, CAN LEAVE BLANK)"></textarea></p>
-        <p><button type="submit">Submit</button></p>
+        <button type="submit" class="submit-btn">SUBMIT</button>
 
     </form>
   </div>
   <div class="image-half">
-      <img src="static/logo.png" alt="Logo"
+
+      <div id="top-errors" style="
+        display:none;
+        background-color:#ffdddd;
+        border:2px black solid;
+        padding:10px;
+        margin-bottom:15px;
+    ">
+        <h5>ERRORS (PLEASE SOLVE):</h5>
+        <ul id="top-errors-list" style="margin:0; padding-left:20px;"></ul>
+      </div>
+
+      <img src="static/logo.png" alt="Logo">
+
   </div>
     <script> <!-- THIS IS FOR NAME VALIDATION (JAVASCRIPT) -->
     const nameField = document.getElementById('name');
@@ -357,8 +395,8 @@
     nameField.addEventListener('input', () => {
       const value = nameField.value.trim();
       if (value === '') {
-        nameField.setCustomValidity("Name cannot be empty or spaces only");
-        nameError.textContent = "Name cannot be empty or spaces only";
+        nameField.setCustomValidity("❗Name cannot be empty or spaces only");
+        nameError.textContent = "❗Name cannot be empty or spaces only";
       } else {
         nameField.setCustomValidity("");
         nameError.textContent = "";
@@ -380,8 +418,8 @@
       const selectedDate = new Date(dateField.value);
 
       if (selectedDate > today) {
-        dateField.setCustomValidity("Date of Birth cannot be in the future");
-        dateError.textContent = "Date of Birth cannot be in the future";
+        dateField.setCustomValidity("❗Date of Birth cannot be in the future");
+        dateError.textContent = "❗Date of Birth cannot be in the future";
       } else {
         dateField.setCustomValidity("");
         dateError.textContent = "";
@@ -400,8 +438,8 @@
 
     countryField.addEventListener('change', () => {
       if (!countryField.value) {
-        countryField.setCustomValidity("Please select a country of origin");
-        countryError.textContent = "Please select a country of origin";
+        countryField.setCustomValidity("❗Please select a country of origin");
+        countryError.textContent = "❗Please select a country of origin";
       } else {
         countryField.setCustomValidity("");
         countryError.textContent = "";
