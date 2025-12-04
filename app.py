@@ -1,7 +1,9 @@
+# Imports
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import json
 import os
 
+# Defining application and adding supersecret key
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'  # Needed for flash messages
 
@@ -18,6 +20,7 @@ def register():
 # Handle form submission (students will add JSON save code here)
 @app.route('/submit', methods=['POST'])
 def submit_form():
+    # get all inputs from the form
     name = request.form['Name']
     country = request.form['country']
     date = request.form['date']
@@ -25,7 +28,7 @@ def submit_form():
     medical_information = request.form['medical_information']
     additional_information = request.form['additional_field']
 
-    # Store values in session so we can repopulate them
+    # Store values in session so we can repopulate them if page is reloaded.
     session['name'] = name
     session['country'] = country
     session['date'] = date
@@ -62,11 +65,23 @@ def submit_form():
 # Display stored registrations (students will add JSON reading code here)
 @app.route('/view')
 def view_registrations():
-    with open('registrations.json', 'r') as file:
-        data = json.load(file)
+    if os.path.exists('registrations.json'):
+        with open('registrations.json', 'r') as file:
+            data = json.load(file)
+    else:
+        data = []
     return render_template('view.html', registrations=data)
 
+@app.route('/delete')
+def delete_registration():
+    if os.path.exists('registrations.json'):
+        os.remove('registrations.json')
+        data = []
 
+    flash('Registration deleted successfully!')
+    return render_template('view.html', registrations=data)
+
+# ACTUALLY RUNS THE APP
 if __name__ == '__main__':
     app.run(debug=True)
 

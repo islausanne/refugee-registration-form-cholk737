@@ -1,5 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+    .delete-btn {
+        background-color: #dc2e2e;  /* bright red */
+        color: white;               /* text color */
+        font-size: 24px;            /* big text */
+        font-weight: bold;
+        padding: 20px 40px;         /* big button */
+        border: none;               /* remove default border */
+        border-radius: 15px;        /* rounded corners */
+        cursor: pointer;            /* pointer on hover */
+        width: 100%;                /* full width of the form container */
+        max-width: 400px;           /* optional: max width */
+        transition: background-color 0.3s, transform 0.2s;  /* nice hover effect */
+    }
+    .delete-btn:hover {
+        background-color: #b44c4c;  /* darker red on hover */
+        transform: scale(1.05);     /* slightly bigger on hover */
+    }
+</style>
 <h2>Registered Refugees</h2>
 {% if registrations %}
 	<table>
@@ -22,8 +41,9 @@
 			</tr>
 		{% endfor %}
 	</table>
-{% else %}
-	<p>No registrations found yet.</p>
-{% endif %}
+    <p><a href="/delete"><button class='delete-btn'>DELETE</button></a></p>
+    {% else %}
+        <p>No registrations found yet.</p>
+    {% endif %}
 {% endblock %}
 
